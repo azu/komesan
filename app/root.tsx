@@ -2,7 +2,8 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "rem
 import type { MetaFunction } from "remix";
 
 export const meta: MetaFunction = () => {
-    return { title: "Komesan" };
+    const description = `はてなブックマークとTwitterのコメントを表示するアプリ`;
+    return { title: "Komesan", description };
 };
 
 export default function App() {
