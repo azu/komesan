@@ -12,7 +12,7 @@ const fetchTwitter = (_url: string) => {
     console.log(query);
     return fetch("https://api.twitter.com/2/tweets/search/recent?" + query, {
         headers: {
-            Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAAJCKYQEAAAAAvaOeH74ZyTrxUd72sXsru70Lzus%3DpLBpCx7MfVgkzXDg7YJh15rZL9YbMT5FoayZc3WufYG6wfHDDX`
+            Authorization: `Bearer ${process.env.TWITTER_TOKEN}`
         }
     })
         .then((res) => res.json())
