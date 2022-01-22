@@ -42,7 +42,7 @@ interface Meta {
 }
 
 const filterRT = (tweet: Tweet) => {
-    return tweet.text.startsWith("RT @");
+    return !tweet.text.startsWith("RT @");
 };
 export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
     const query = new URLSearchParams([
