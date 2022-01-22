@@ -1,6 +1,6 @@
 export interface BookmarkSite {
     screenshot: string;
-    bookmarks: Bookmark[];
+    bookmarks: Bookmark[]; // comment only
     requested_url: string;
     url: string;
     related: Related[];
@@ -25,10 +25,18 @@ export interface Related {
 }
 
 export const fetchHatenaBookmark = (url: string): Promise<BookmarkSite> => {
-    return fetch(`https://b.hatena.ne.jp/entry/json/?url=${encodeURIComponent(url)}`).then((res) => {
-        if (!res.ok) {
-            return Promise.reject(new Error("response error"));
-        }
-        return res.json();
-    });
+    return fetch(`https://b.hatena.ne.jp/entry/json/?url=${encodeURIComponent(url)}`)
+        .then((res) => {
+            if (!res.ok) {
+                return Promise.reject(new Error("response error"));
+            }
+            return res.json();
+        })
+        .then((json) => {
+            const result = json as BookmarkSite;
+            return {
+                ...result,
+                bookmarks: result.bookmarks.filter((bookmark) => bookmark.comment.trim().length > 0)
+            };
+        });
 };

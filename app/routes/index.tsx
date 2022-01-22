@@ -33,8 +33,12 @@ export default function Index() {
     return (
         <div>
             <h1>Komesan</h1>
-            <a href={url}>{url}</a>
-            <h2>はてなブックマーク</h2>
+            <p>
+                <a href={url}>{url}</a>
+            </p>
+            <h2>
+                はてなブックマーク({hatebu?.bookmarks.length}/{hatebu?.count})
+            </h2>
             <ul style={{ listStyle: "none" }}>
                 {hatebu?.bookmarks.map((bookmark) => {
                     return (
