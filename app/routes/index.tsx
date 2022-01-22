@@ -1,23 +1,47 @@
 import { LoaderFunction, useLoaderData } from "remix";
-import { fetchTwitter } from "~/lib/Twitter";
+import { fetchTwitter, Tweets } from "~/lib/Twitter";
+import { BookmarkSite, fetchHatenaBookmark } from "~/lib/Bookmark";
 
-const fetchHatenaBookmark = (_url: string) => {
-    return fetch("https://b.hatena.ne.jp/entry/json/http://www.hatena.ne.jp/").then((res) => res.json());
-};
-export let loader: LoaderFunction = ({ context }) => {
-    const TWITTER_TOKEN = context.TWITTER_TOKEN;
-    return fetchTwitter("", {
-        TWITTER_TOKEN
-    });
+export let loader: LoaderFunction = async ({ context, request }) => {
+    const url = new URL(request.url);
+    const urlParam = url.searchParams.get("url");
+    if (!urlParam) {
+        return {
+            twitter: [],
+            hatebu: []
+        };
+    }
+    const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
+    const [twitter, hatebu] = await Promise.all([
+        fetchTwitter(urlParam, {
+            TWITTER_TOKEN
+        }),
+        fetchHatenaBookmark(urlParam)
+    ]);
+    console.log("twitter", twitter);
+    return {
+        twitter,
+        hatebu
+    };
 };
 export default function Index() {
-    const products = useLoaderData();
-    console.log("products", products);
+    const { twitter, hatebu } = useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined }>();
     return (
         <div>
+            <h2>はてなブックマーク</h2>
             <ul>
-                {products.map((bookmark: any) => {
-                    return <li>{bookmark.text}</li>;
+                {hatebu?.bookmarks.map((bookmark) => {
+                    return (
+                        <li key={bookmark.user + bookmark.comment}>
+                            {bookmark.user}: {bookmark.comment}
+                        </li>
+                    );
+                })}
+            </ul>
+            <h2>Twitter</h2>
+            <ul>
+                {twitter?.map((bookmark) => {
+                    return <li key={bookmark.id}>{bookmark.text}</li>;
                 })}
             </ul>
         </div>

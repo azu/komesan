@@ -1,12 +1,13 @@
+export type Tweets = Tweet[];
 export type Tweet = {
     id: string;
     text: string;
     created_at: string;
 };
 
-export const fetchTwitter = (_url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
+export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
     const query = new URLSearchParams([
-        ["query", "nyc"],
+        ["query", "test"],
         ["tweet.fields", "text,created_at"]
     ]).toString();
     console.log(query);
@@ -17,6 +18,7 @@ export const fetchTwitter = (_url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: s
     })
         .then((res) => res.json())
         .then((json) => {
+            console.log("json", json);
             return (json as any).data;
         });
 };

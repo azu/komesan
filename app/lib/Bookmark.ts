@@ -23,3 +23,12 @@ export interface Related {
     eid: string;
     title: string;
 }
+
+export const fetchHatenaBookmark = (url: string): Promise<BookmarkSite> => {
+    return fetch(`https://b.hatena.ne.jp/entry/json/?url=${encodeURIComponent(url)}`).then((res) => {
+        if (!res.ok) {
+            return Promise.reject(new Error("response error"));
+        }
+        return res.json();
+    });
+};
