@@ -99,15 +99,17 @@ export default function Index() {
                                 {tweet.name}
                             </a>
                             <LinkItUrl>{tweet.text}</LinkItUrl>
-                            <a
-                                href={`https://twitter.com/${tweet.username}/status/${tweet.id}`}
-                                style={{
-                                    marginLeft: "4px"
-                                }}
-                                target={"_blank"}
-                            >
-                                {new Date(tweet.created_at).toISOString()}
-                            </a>
+                            <p>
+                                <a
+                                    href={`https://twitter.com/${tweet.username}/status/${tweet.id}`}
+                                    style={{
+                                        marginLeft: "4px"
+                                    }}
+                                    target={"_blank"}
+                                >
+                                    {new Date(tweet.created_at).toISOString()}
+                                </a>
+                            </p>
                         </li>
                     );
                 })}
