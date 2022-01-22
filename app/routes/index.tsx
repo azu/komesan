@@ -49,7 +49,7 @@ export default function Index() {
             <h2>
                 はてなブックマーク({hatebu?.bookmarks.length}/{hatebu?.count})
             </h2>
-            <ul style={{ listStyle: "none" }}>
+            <ul style={{ listStyle: "none", padding: "0" }}>
                 {hatebu?.bookmarks.map((bookmark) => {
                     return (
                         <li key={bookmark.user + bookmark.comment} className={"list-item"}>
@@ -76,7 +76,7 @@ export default function Index() {
                 })}
             </ul>
             <h2>Twitter</h2>
-            <ul style={{ listStyle: "none" }}>
+            <ul style={{ listStyle: "none", padding: "0" }}>
                 {twitter?.map((tweet) => {
                     return (
                         <li key={tweet.id} className={"list-item"}>
