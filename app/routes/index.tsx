@@ -80,7 +80,12 @@ export default function Index() {
                 {twitter?.map((tweet) => {
                     return (
                         <li key={tweet.id} className={"list-item"}>
-                            <a href={`https://twitter.com/${tweet.username}`}>
+                            <a
+                                href={`https://twitter.com/${tweet.username}`}
+                                style={{
+                                    paddingRight: "4px"
+                                }}
+                            >
                                 <img
                                     width="16"
                                     height="16"
