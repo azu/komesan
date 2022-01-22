@@ -50,7 +50,7 @@ export default function Index() {
                                 alt={""}
                                 loading={"lazy"}
                                 style={{
-                                    paddingRight: "2px"
+                                    paddingRight: "4px"
                                 }}
                             />
                             <span
@@ -78,7 +78,7 @@ export default function Index() {
                                     alt={""}
                                     loading={"lazy"}
                                     style={{
-                                        paddingRight: "2px"
+                                        paddingRight: "4px"
                                     }}
                                 />
                                 {tweet.name}
@@ -87,7 +87,7 @@ export default function Index() {
                             <a
                                 href={`https://twitter.com/${tweet.username}/${tweet.id}`}
                                 style={{
-                                    paddingLeft: "2px"
+                                    marginLeft: "4px"
                                 }}
                             >
                                 {new Date(tweet.created_at).toISOString()}
