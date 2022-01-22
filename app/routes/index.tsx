@@ -67,7 +67,7 @@ export default function Index() {
             </ul>
             <h2>Twitter</h2>
             <ul style={{ listStyle: "none" }}>
-                {twitter?.map((tweet) => {
+                {twitter?.data?.map((tweet) => {
                     return (
                         <li key={tweet.id}>
                             <LinkItUrl>{tweet.text}</LinkItUrl>
