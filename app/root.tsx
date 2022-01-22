@@ -2,7 +2,7 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "rem
 import type { MetaFunction } from "remix";
 
 export const meta: MetaFunction = () => {
-    return { title: "New Remix App" };
+    return { title: "Komesan" };
 };
 
 export default function App() {
@@ -13,7 +13,6 @@ export default function App() {
                 <meta name="viewport" content="width=device-width,initial-scale=1" />
                 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
                 <Meta />
-                <title>Komesan</title>
                 <Links />
             </head>
             <body>
