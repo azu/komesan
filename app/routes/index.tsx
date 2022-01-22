@@ -84,7 +84,12 @@ export default function Index() {
                                 {tweet.name}
                             </a>
                             <LinkItUrl>{tweet.text}</LinkItUrl>
-                            <a href={`https://twitter.com/${tweet.username}/${tweet.id}`}>
+                            <a
+                                href={`https://twitter.com/${tweet.username}/${tweet.id}`}
+                                style={{
+                                    paddingLeft: "2px"
+                                }}
+                            >
                                 {new Date(tweet.created_at).toISOString()}
                             </a>
                         </li>
