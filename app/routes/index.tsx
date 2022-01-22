@@ -8,7 +8,7 @@ export let loader: LoaderFunction = async ({ context, request }) => {
     if (!urlParam) {
         return {
             twitter: [],
-            hatebu: []
+            hatebu: undefined
         };
     }
     const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
@@ -18,7 +18,6 @@ export let loader: LoaderFunction = async ({ context, request }) => {
         }),
         fetchHatenaBookmark(urlParam)
     ]);
-    console.log("twitter", twitter);
     return {
         twitter,
         hatebu
