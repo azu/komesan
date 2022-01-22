@@ -1,6 +1,5 @@
 import { LoaderFunction, useLoaderData } from "remix";
-import { BookmarkSite } from "~/routes/Bookmark";
-import { fetchTwitter } from "~/routes/Twitter";
+import { fetchTwitter } from "~/lib/Twitter";
 
 const fetchHatenaBookmark = (_url: string) => {
     return fetch("https://b.hatena.ne.jp/entry/json/http://www.hatena.ne.jp/").then((res) => res.json());
