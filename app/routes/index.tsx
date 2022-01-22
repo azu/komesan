@@ -95,7 +95,7 @@ export default function Index() {
                             </a>
                             <LinkItUrl>{tweet.text}</LinkItUrl>
                             <a
-                                href={`https://twitter.com/${tweet.username}/${tweet.id}`}
+                                href={`https://twitter.com/${tweet.username}/status/${tweet.id}`}
                                 style={{
                                     marginLeft: "4px"
                                 }}
