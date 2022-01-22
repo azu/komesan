@@ -32,6 +32,10 @@ export default function Index() {
     console.log({ twitter, hatebu, url });
     return (
         <div>
+            <style>{`.list-item{
+            padding: 0.5em 0;
+            border-bottom: 1px solid #ddd;
+            }`}</style>
             <h1>Komesan</h1>
             <p>
                 <a href={url}>{url}</a>
@@ -42,7 +46,7 @@ export default function Index() {
             <ul style={{ listStyle: "none" }}>
                 {hatebu?.bookmarks.map((bookmark) => {
                     return (
-                        <li key={bookmark.user + bookmark.comment}>
+                        <li key={bookmark.user + bookmark.comment} className={"list-item"}>
                             <img
                                 width="16"
                                 height="16"
@@ -69,7 +73,7 @@ export default function Index() {
             <ul style={{ listStyle: "none" }}>
                 {twitter?.map((tweet) => {
                     return (
-                        <li key={tweet.id}>
+                        <li key={tweet.id} className={"list-item"}>
                             <a href={`https://twitter.com/${tweet.username}`}>
                                 <img
                                     width="16"

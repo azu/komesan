@@ -41,6 +41,9 @@ interface Meta {
     next_token: string;
 }
 
+const filterRT = (tweet: Tweet) => {
+    return tweet.text.startsWith("RT @");
+};
 export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
     const query = new URLSearchParams([
         ["query", "url:" + url.replace(/^https?:\/\//, "")],
@@ -56,17 +59,19 @@ export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: st
         .then((res) => res.json())
         .then((json) => {
             const res = json as SearchResponse;
-            return res.data.map((tweet) => {
-                const user = res.includes.users.find((user) => user.id === tweet.author_id);
-                if (!user) {
-                    throw new Error("Not found user");
-                }
-                return {
-                    ...tweet,
-                    name: user.name,
-                    username: user.username,
-                    profile_image_url: user.profile_image_url
-                } as Tweet;
-            });
+            return res.data
+                ?.map((tweet) => {
+                    const user = res.includes.users.find((user) => user.id === tweet.author_id);
+                    if (!user) {
+                        throw new Error("Not found user");
+                    }
+                    return {
+                        ...tweet,
+                        name: user.name,
+                        username: user.username,
+                        profile_image_url: user.profile_image_url
+                    } as Tweet;
+                })
+                .filter((tweet) => filterRT(tweet));
         });
 };
