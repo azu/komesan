@@ -57,7 +57,12 @@ export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: st
             Authorization: `Bearer ${TWITTER_TOKEN}`
         }
     })
-        .then((res) => res.json())
+        .then((res) => {
+            if (!res.ok) {
+                return Promise.reject(new Error("response error"));
+            }
+            return res.json();
+        })
         .then((json) => {
             const res = json as SearchResponse;
             return res.data

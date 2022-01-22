@@ -15,9 +15,15 @@ export let loader: LoaderFunction = async ({ context, request }) => {
     }
     const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
     const [hatebu, twitter] = await Promise.all([
-        fetchHatenaBookmark(urlParam),
+        fetchHatenaBookmark(urlParam).catch((error) => {
+            console.error("fetchHatenaBookmark", error);
+            return [];
+        }),
         fetchTwitter(urlParam, {
             TWITTER_TOKEN
+        }).catch((error) => {
+            console.error("fetchTwitter", error);
+            return;
         })
     ]);
     return {
