@@ -47,6 +47,7 @@ const filterRT = (tweet: Tweet) => {
 export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
     const query = new URLSearchParams([
         ["query", "url:" + url.replace(/^https?:\/\//, "")],
+        ["max_results", "20"],
         ["tweet.fields", "text,created_at"],
         ["user.fields", "profile_image_url,created_at,description,id,name"],
         ["expansions", "author_id"] // relation
