@@ -38,10 +38,14 @@ export default function Index() {
     console.log({ twitter, hatebu, url });
     return (
         <div>
-            <style>{`.list-item{
-            padding: 0.5em 0;
-            border-bottom: 1px solid #ddd;
-            }`}</style>
+            <style>{`
+.list-item {
+    padding: 0.5em 0;
+    border-bottom: 1px solid #ddd;
+}
+.list-item a {
+    word-break: break-all;
+}`}</style>
             <h1>Komesan</h1>
             <p>
                 <a href={url}>{url}</a>
