@@ -99,6 +99,7 @@ export default function Index() {
                                 style={{
                                     marginLeft: "4px"
                                 }}
+                                target={"_blank"}
                             >
                                 {new Date(tweet.created_at).toISOString()}
                             </a>
