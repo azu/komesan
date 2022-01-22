@@ -1,6 +1,4 @@
-export type Tweets = {
-    data: Tweet[];
-};
+export type Tweets = Tweet[];
 export type Tweet = {
     author_id: string;
     id: string;
