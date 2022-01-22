@@ -103,7 +103,7 @@ export default function Index() {
                                 {tweet.name}
                             </a>
                             <LinkItUrl>{tweet.text}</LinkItUrl>
-                            <p>
+                            <p style={{ margin: 0 }}>
                                 <a
                                     href={`https://twitter.com/${tweet.username}/status/${tweet.id}`}
                                     style={{
