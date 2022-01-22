@@ -9,7 +9,7 @@ export type Tweet = {
 
 export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
     const query = new URLSearchParams([
-        ["query", url],
+        ["query", "url:" + url.replace(/^https?:\/\//, "")],
         ["tweet.fields", "text,created_at"],
         ["user.fields", "profile_image_url,name,id"]
     ]).toString();
