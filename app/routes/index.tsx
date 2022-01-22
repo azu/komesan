@@ -70,6 +70,19 @@ export default function Index() {
                 {twitter?.data?.map((tweet) => {
                     return (
                         <li key={tweet.id}>
+                            <a href={`https://twitter.com/${tweet.username}`}>
+                                <img
+                                    width="16"
+                                    height="16"
+                                    src={tweet.profile_image_url}
+                                    alt={""}
+                                    loading={"lazy"}
+                                    style={{
+                                        paddingRight: "2px"
+                                    }}
+                                />
+                                {tweet.name}
+                            </a>
                             <LinkItUrl>{tweet.text}</LinkItUrl>
                         </li>
                     );
