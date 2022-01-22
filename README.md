@@ -1,22 +1,27 @@
-# Welcome to Remix!
+# komesan
 
-- [Remix Docs](https://remix.run/docs)
+- [ ] Write a project description
 
-## Development
+## Installation
 
-You will be utlizing Wrangler for local development to emulate the Cloudflare runtime. This is already wired up in your package.json as the `dev` script:
+- [ ] Describe the installation process
 
-```sh
-# start the remix dev server and wrangler
-$ npm run dev
-```
+## Usage
 
-Open up [http://127.0.0.1:8788](http://127.0.0.1:8788) and you should be ready to go!
+- [ ] Write usage instructions
 
-## Deployment
+## Tests
 
-Cloudflare Pages are currently only deployable through their Git provider integrations.
+- [ ] Write How to Tests
 
-If you don't already have an account, then [create a Cloudflare account here](https://dash.cloudflare.com/sign-up/pages) and after verifying your email address with Cloudflare, go to your dashboard and follow the [Cloudflare Pages deployment guide](https://developers.cloudflare.com/pages/framework-guides/deploy-anything).
+## Contributing
 
-Configure the "Build command" should be set to `npm run build`, and the "Build output directory" should be set to `public`.
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
+## License
+
+MIT
