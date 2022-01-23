@@ -10,6 +10,7 @@ import styles from "../styles/simple.css";
 export function links() {
     return [{ rel: "stylesheet", href: styles }];
 }
+
 export let loader: LoaderFunction = async ({ context, request }) => {
     const url = new URL(request.url);
     const urlParam = url.searchParams.get("url");
@@ -165,7 +166,7 @@ export default function Index() {
                 <button type="submit">View</button>
             </Form>
             <h2>
-                <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`}>
+                <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
                     はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
                 </a>
             </h2>
@@ -174,7 +175,6 @@ export default function Index() {
                     return (
                         <li key={bookmark.user + bookmark.comment} className={"list-item"} tabIndex={-1}>
                             <img
-                                width="16"
                                 height="16"
                                 src={`https://cdn.profile-image.st-hatena.com/users/${bookmark.user}/profile.png`}
                                 alt={""}
@@ -199,7 +199,9 @@ export default function Index() {
                 })}
             </ul>
             <h2>
-                <a href={`https://twitter.com/search?f=realtime&q=${url}`}>Twitter</a>
+                <a href={`https://twitter.com/search?f=realtime&q=${url}`} rel={"noopener noreferrer"}>
+                    Twitter
+                </a>
             </h2>
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {twitter?.map((tweet) => {
@@ -210,9 +212,9 @@ export default function Index() {
                                 style={{
                                     paddingRight: "4px"
                                 }}
+                                rel={"noopener noreferrer"}
                             >
                                 <img
-                                    width="16"
                                     height="16"
                                     src={tweet.profile_image_url}
                                     alt={""}
@@ -231,6 +233,7 @@ export default function Index() {
                                         marginLeft: "4px"
                                     }}
                                     target={"_blank"}
+                                    rel={"noopener noreferrer"}
                                 >
                                     {new Date(tweet.created_at).toISOString()}
                                 </a>
