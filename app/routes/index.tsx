@@ -51,7 +51,7 @@ export default function Index() {
                 <a href={url}>{url}</a>
             </p>
             <h2>
-                はてなブックマーク({hatebu?.bookmarks.length}/{hatebu?.count})
+                はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
             </h2>
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {hatebu?.bookmarks?.map((bookmark) => {
