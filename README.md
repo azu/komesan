@@ -2,6 +2,9 @@
 
 View comment about the site.
 
+- はてなブックマーク
+- Twitter
+
 ## Usage
 
 1. Visit https://komesan.pages.dev/
