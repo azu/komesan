@@ -1,18 +1,17 @@
 # komesan
 
-- [ ] Write a project description
-
-## Installation
-
-- [ ] Describe the installation process
+View comment about the site.
 
 ## Usage
 
 - [ ] Write usage instructions
 
-## Tests
+## Develop
 
-- [ ] Write How to Tests
+    yarn install
+    yarn dev
+
+    # Open http://localhost:8080?url=https://example.com
 
 ## Contributing
 
