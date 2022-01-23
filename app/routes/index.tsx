@@ -40,6 +40,9 @@ export const useIndex = (props: { url: string }) => {
     }, []);
     return [{ inputUrl }, { onChange }] as const;
 };
+const trimSchema = (url: string) => {
+    return url.replace(/^https:\/\//, "");
+};
 export default function Index() {
     const { twitter, hatebu, url } =
         useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string }>();
@@ -63,11 +66,20 @@ export default function Index() {
                     alignItems: "flex-end"
                 }}
             >
-                <input name="url" value={inputUrl} type="text" onChange={onChange} style={{ flex: 1 }} />
+                <input
+                    name="url"
+                    value={inputUrl}
+                    type="text"
+                    onChange={onChange}
+                    placeholder={"https://example.com"}
+                    style={{ flex: 1 }}
+                />
                 <button type="submit">View</button>
             </form>
             <h2>
-                はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
+                <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`}>
+                    はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
+                </a>
             </h2>
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {hatebu?.bookmarks?.map((bookmark) => {
@@ -95,7 +107,9 @@ export default function Index() {
                     );
                 })}
             </ul>
-            <h2>Twitter</h2>
+            <h2>
+                <a href={`https://twitter.com/search?f=realtime&q=${url}`}>Twitter</a>
+            </h2>
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {twitter?.map((tweet) => {
                     return (
