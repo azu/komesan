@@ -237,7 +237,7 @@ export default function Index() {
                                             paddingRight: "4px"
                                         }}
                                     />
-                                    {tweet.name}
+                                    {tweet.username}
                                 </a>
                                 <LinkItUrl>{tweet.text}</LinkItUrl>
                                 <p style={{ margin: 0 }}>
