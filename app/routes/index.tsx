@@ -5,6 +5,11 @@ import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
 import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import { createStorage } from "../lib/DOWNVOTE";
+import styles from "../styles/simple.css";
+
+export function links() {
+    return [{ rel: "stylesheet", href: styles }];
+}
 export let loader: LoaderFunction = async ({ context, request }) => {
     const url = new URL(request.url);
     const urlParam = url.searchParams.get("url");
