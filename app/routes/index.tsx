@@ -1,9 +1,10 @@
 import { Form, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
+import { ActionFunction, redirect } from "remix";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
 import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react";
-
+import { createStorage } from "../lib/DOWNVOTE";
 export let loader: LoaderFunction = async ({ context, request }) => {
     const url = new URL(request.url);
     const urlParam = url.searchParams.get("url");
@@ -15,7 +16,8 @@ export let loader: LoaderFunction = async ({ context, request }) => {
         };
     }
     const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
-    const downVotes = await getDownVotes();
+    const storage = createStorage(context);
+    const downVotes = await storage.getDownVotes();
     const [hatebu, twitter] = await Promise.all([
         fetchHatenaBookmark(urlParam, {
             downVotes
@@ -37,9 +39,6 @@ export let loader: LoaderFunction = async ({ context, request }) => {
         hatebu
     };
 };
-import { ActionFunction, redirect } from "remix";
-import { downVote, getDownVotes } from "../lib/DOWNVOTE";
-
 type NullableFormValue<T> = {
     [P in keyof T]: T[P] | null | File;
 };
@@ -57,7 +56,7 @@ export const validate = ({ url, type, id }: NullableFormValue<SubmitFormValue>) 
     }
 };
 // server
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, context }) => {
     const formData = await request.formData();
     const form = {
         url: formData.get("url"),
@@ -70,7 +69,8 @@ export const action: ActionFunction = async ({ request }) => {
             errors: errors.map((e) => e.message).join(",")
         };
     }
-    await downVote({
+    const storage = createStorage(context);
+    await storage.downVote({
         type: form.type as string,
         id: form.id as string
     });
