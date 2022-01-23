@@ -2,6 +2,7 @@ import { LoaderFunction, useLoaderData } from "remix";
 import { fetchTwitter, Tweets } from "~/lib/Twitter";
 import { BookmarkSite, fetchHatenaBookmark } from "~/lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
+import { ChangeEventHandler, useCallback, useState } from "react";
 
 export let loader: LoaderFunction = async ({ context, request }) => {
     const url = new URL(request.url);
@@ -32,10 +33,17 @@ export let loader: LoaderFunction = async ({ context, request }) => {
         hatebu
     };
 };
+export const useIndex = (props: { url: string }) => {
+    const [inputUrl, setInputUrl] = useState<string>(props.url);
+    const onChange: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
+        return setInputUrl(event.target.value ?? "");
+    }, []);
+    return [{ inputUrl }, { onChange }] as const;
+};
 export default function Index() {
     const { twitter, hatebu, url } =
         useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string }>();
-    console.log({ twitter, hatebu, url });
+    const [{ inputUrl }, { onChange }] = useIndex({ url });
     return (
         <div>
             <style>{`
@@ -47,9 +55,17 @@ export default function Index() {
     word-break: break-all;
 }`}</style>
             <h1>Komesan</h1>
-            <p>
-                <a href={url}>{url}</a>
-            </p>
+            <form
+                method="get"
+                action="/"
+                style={{
+                    display: "flex",
+                    alignItems: "flex-end"
+                }}
+            >
+                <input name="url" value={inputUrl} type="text" onChange={onChange} style={{ flex: 1 }} />
+                <button type="submit">View</button>
+            </form>
             <h2>
                 はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
             </h2>
