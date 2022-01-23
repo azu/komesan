@@ -147,7 +147,9 @@ export default function Index() {
     word-break: break-all;
 }
 `}</style>
-            <h1>Komesan</h1>
+            <h1>
+                <a href={"/"}>Komesan</a>
+            </h1>
             <div style={{ position: "fixed", top: 0, right: 0, opacity: 0 }}>
                 <button onClick={onToggleShowController} style={{ margin: 0 }}>
                     💬
