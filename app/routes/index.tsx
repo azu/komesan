@@ -1,4 +1,4 @@
-import { Form, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
+import { Form, HeadersFunction, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { ActionFunction, redirect } from "remix";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
@@ -10,6 +10,12 @@ import styles from "../styles/simple.css";
 export function links() {
     return [{ rel: "stylesheet", href: styles }];
 }
+
+export const headers: HeadersFunction = () => {
+    return {
+        "Cache-Control": "max-age=0, s-maxage=30, stale-while-revalidate=30"
+    };
+};
 
 export let loader: LoaderFunction = async ({ context, request }) => {
     const url = new URL(request.url);
@@ -165,7 +171,7 @@ export default function Index() {
                 />
                 <button type="submit">View</button>
             </Form>
-            <h2 hidden={hatebu === undefined}>
+            <h2>
                 <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
                     はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
                 </a>
@@ -198,7 +204,7 @@ export default function Index() {
                     );
                 })}
             </ul>
-            <h2 hidden={twitter.length === 0}>
+            <h2>
                 <a href={`https://twitter.com/search?f=realtime&q=${url}`} rel={"noopener noreferrer"}>
                     Twitter
                 </a>
