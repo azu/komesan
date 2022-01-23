@@ -176,6 +176,14 @@ export default function Index() {
                 />
                 <button type="submit">View</button>
             </Form>
+            <div hidden={!noResult}>
+                <p>
+                    Example:{" "}
+                    <Link to={"/?url=https://komesan.pages.dev/"}>
+                        https://komesan.pages.dev/?url=https://komesan.pages.dev
+                    </Link>
+                </p>
+            </div>
             <div hidden={noResult}>
                 <h2>
                     <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
