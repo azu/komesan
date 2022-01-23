@@ -1,4 +1,4 @@
-import { Form, HeadersFunction, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
+import { Form, HeadersFunction, Link, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { ActionFunction, redirect } from "remix";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
@@ -148,7 +148,7 @@ export default function Index() {
 }
 `}</style>
             <h1>
-                <a href={"/"}>Komesan</a>
+                <Link to={"/"}>Komesan</Link>
             </h1>
             <div style={{ position: "fixed", top: 0, right: 0, opacity: 0 }}>
                 <button onClick={onToggleShowController} style={{ margin: 0 }}>
