@@ -3,7 +3,7 @@ import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { ActionFunction, redirect } from "remix";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
-import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createStorage } from "../lib/DOWNVOTE";
 import styles from "../styles/simple.css";
 
@@ -118,6 +118,9 @@ const DownVote = ({ type, url, id }: { type: "hatenabookmark" | "twitter"; url: 
 export const useIndex = (props: { url: string }) => {
     const [showController, setShowController] = useState(false);
     const [inputUrl, setInputUrl] = useState<string>(props.url);
+    const noResult = useMemo(() => {
+        return !props.url.startsWith("http");
+    }, [props.url]);
     const onChange: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
         return setInputUrl(event.target.value ?? "");
     }, []);
@@ -125,7 +128,7 @@ export const useIndex = (props: { url: string }) => {
         return setShowController((prevState) => !prevState);
     }, []);
     return [
-        { inputUrl, showController },
+        { inputUrl, showController, noResult },
         { onChange, onToggleShowController }
     ] as const;
 };
@@ -135,7 +138,7 @@ const trimSchema = (url: string) => {
 export default function Index() {
     const { twitter, hatebu, url } =
         useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string }>();
-    const [{ inputUrl, showController }, { onChange, onToggleShowController }] = useIndex({ url });
+    const [{ inputUrl, showController, noResult }, { onChange, onToggleShowController }] = useIndex({ url });
     return (
         <div>
             <style>{`
@@ -173,86 +176,90 @@ export default function Index() {
                 />
                 <button type="submit">View</button>
             </Form>
-            <h2>
-                <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
-                    はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
-                </a>
-            </h2>
-            <ul style={{ listStyle: "none", padding: "0" }}>
-                {hatebu?.bookmarks?.map((bookmark) => {
-                    return (
-                        <li key={bookmark.user + bookmark.comment} className={"list-item"} tabIndex={-1}>
-                            <img
-                                height="16"
-                                src={`https://cdn.profile-image.st-hatena.com/users/${bookmark.user}/profile.png`}
-                                alt={""}
-                                loading={"lazy"}
-                                style={{
-                                    paddingRight: "4px"
-                                }}
-                            />
-                            <span
-                                style={{
-                                    color: "#4B4B4B"
-                                }}
-                            >
-                                {bookmark.user}
-                            </span>
-                            : <LinkItUrl>{bookmark.comment}</LinkItUrl>
-                            <div hidden={!showController}>
-                                <DownVote type={"hatenabookmark"} id={bookmark.user} url={url} />
-                            </div>
-                        </li>
-                    );
-                })}
-            </ul>
-            <h2>
-                <a href={`https://twitter.com/search?f=realtime&q=${url}`} rel={"noopener noreferrer"}>
-                    Twitter
-                </a>
-            </h2>
-            <ul style={{ listStyle: "none", padding: "0" }}>
-                {twitter?.map((tweet) => {
-                    return (
-                        <li key={tweet.id} className={"list-item"} tabIndex={-1}>
-                            <a
-                                href={`https://twitter.com/${tweet.username}`}
-                                style={{
-                                    paddingRight: "4px"
-                                }}
-                                rel={"noopener noreferrer"}
-                            >
+            <div hidden={noResult}>
+                <h2>
+                    <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
+                        はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
+                    </a>
+                </h2>
+                <ul style={{ listStyle: "none", padding: "0" }}>
+                    {hatebu?.bookmarks?.map((bookmark) => {
+                        return (
+                            <li key={bookmark.user + bookmark.comment} className={"list-item"} tabIndex={-1}>
                                 <img
                                     height="16"
-                                    src={tweet.profile_image_url}
+                                    src={`https://cdn.profile-image.st-hatena.com/users/${bookmark.user}/profile.png`}
                                     alt={""}
                                     loading={"lazy"}
                                     style={{
                                         paddingRight: "4px"
                                     }}
                                 />
-                                {tweet.name}
-                            </a>
-                            <LinkItUrl>{tweet.text}</LinkItUrl>
-                            <p style={{ margin: 0 }}>
-                                <a
-                                    href={`https://twitter.com/${tweet.username}/status/${tweet.id}`}
+                                <span
                                     style={{
-                                        marginLeft: "4px"
+                                        color: "#4B4B4B"
                                     }}
-                                    target={"_blank"}
+                                >
+                                    {bookmark.user}
+                                </span>
+                                : <LinkItUrl>{bookmark.comment}</LinkItUrl>
+                                <div hidden={!showController}>
+                                    <DownVote type={"hatenabookmark"} id={bookmark.user} url={url} />
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+            <div hidden={noResult}>
+                <h2>
+                    <a href={`https://twitter.com/search?f=realtime&q=${url}`} rel={"noopener noreferrer"}>
+                        Twitter
+                    </a>
+                </h2>
+                <ul style={{ listStyle: "none", padding: "0" }}>
+                    {twitter?.map((tweet) => {
+                        return (
+                            <li key={tweet.id} className={"list-item"} tabIndex={-1}>
+                                <a
+                                    href={`https://twitter.com/${tweet.username}`}
+                                    style={{
+                                        paddingRight: "4px"
+                                    }}
                                     rel={"noopener noreferrer"}
                                 >
-                                    {new Date(tweet.created_at).toISOString()}
+                                    <img
+                                        height="16"
+                                        src={tweet.profile_image_url}
+                                        alt={""}
+                                        loading={"lazy"}
+                                        style={{
+                                            paddingRight: "4px"
+                                        }}
+                                    />
+                                    {tweet.name}
                                 </a>
-                            </p>
-                            <div hidden={!showController}>
-                                <DownVote type={"twitter"} id={tweet.username} url={url} />
-                            </div>
-                        </li>
-                    );
-                })}
-            </ul>
+                                <LinkItUrl>{tweet.text}</LinkItUrl>
+                                <p style={{ margin: 0 }}>
+                                    <a
+                                        href={`https://twitter.com/${tweet.username}/status/${tweet.id}`}
+                                        style={{
+                                            marginLeft: "4px"
+                                        }}
+                                        target={"_blank"}
+                                        rel={"noopener noreferrer"}
+                                    >
+                                        {new Date(tweet.created_at).toISOString()}
+                                    </a>
+                                </p>
+                                <div hidden={!showController}>
+                                    <DownVote type={"twitter"} id={tweet.username} url={url} />
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
             <footer>
                 <p>指定したURLのはてなブックマークとTwitterのコメントを表示するサイトです。</p>
                 <p>
