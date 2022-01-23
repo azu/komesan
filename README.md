@@ -4,7 +4,12 @@ View comment about the site.
 
 ## Usage
 
-- [ ] Write usage instructions
+1. Visit https://komesan.pages.dev/
+2. Input URL to view comments
+
+```
+https://komesan.pages.dev/?url=<encoded url>
+```
 
 ## Develop
 
