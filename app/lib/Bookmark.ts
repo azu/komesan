@@ -1,3 +1,5 @@
+import { createId, DownVote } from "./DOWNVOTE";
+
 export type BookmarkSite = {
     screenshot: string;
     bookmarks: Bookmark[]; // comment only
@@ -24,7 +26,7 @@ export interface Related {
     title: string;
 }
 
-export const fetchHatenaBookmark = (url: string): Promise<BookmarkSite> => {
+export const fetchHatenaBookmark = (url: string, { downVotes }: { downVotes: DownVote }): Promise<BookmarkSite> => {
     return fetch(`https://b.hatena.ne.jp/entry/json/?url=${encodeURIComponent(url)}`)
         .then((res) => {
             if (!res.ok) {
@@ -39,7 +41,15 @@ export const fetchHatenaBookmark = (url: string): Promise<BookmarkSite> => {
             }
             return {
                 ...result,
-                bookmarks: result?.bookmarks?.filter((bookmark) => bookmark.comment.trim().length > 0)
+                bookmarks: result?.bookmarks
+                    ?.filter((bookmark) => bookmark.comment.trim().length > 0)
+                    ?.filter((bookmark) => {
+                        const key = createId({
+                            id: bookmark.user,
+                            type: "hatenabookmark"
+                        });
+                        return !Object.prototype.hasOwnProperty.call(downVotes, key);
+                    })
             };
         });
 };

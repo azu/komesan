@@ -1,8 +1,8 @@
-import { LoaderFunction, useLoaderData } from "remix";
-import { fetchTwitter, Tweets } from "~/lib/Twitter";
-import { BookmarkSite, fetchHatenaBookmark } from "~/lib/Bookmark";
+import { Form, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
+import { fetchTwitter, Tweets } from "../lib/Twitter";
+import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
-import { ChangeEventHandler, useCallback, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useRef, useState } from "react";
 
 export let loader: LoaderFunction = async ({ context, request }) => {
     const url = new URL(request.url);
@@ -15,12 +15,16 @@ export let loader: LoaderFunction = async ({ context, request }) => {
         };
     }
     const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
+    const downVotes = await getDownVotes();
     const [hatebu, twitter] = await Promise.all([
-        fetchHatenaBookmark(urlParam).catch((error) => {
+        fetchHatenaBookmark(urlParam, {
+            downVotes
+        }).catch((error) => {
             console.error("fetchHatenaBookmark", error);
             return [];
         }),
         fetchTwitter(urlParam, {
+            downVotes,
             TWITTER_TOKEN
         }).catch((error) => {
             console.error("fetchTwitter", error);
@@ -33,12 +37,85 @@ export let loader: LoaderFunction = async ({ context, request }) => {
         hatebu
     };
 };
+import { ActionFunction, redirect } from "remix";
+import { downVote, getDownVotes } from "../lib/DOWNVOTE";
+
+type NullableFormValue<T> = {
+    [P in keyof T]: T[P] | null | File;
+};
+
+type SubmitFormValue = { url: string; type: string; id: string };
+export const validate = ({ url, type, id }: NullableFormValue<SubmitFormValue>) => {
+    if (typeof url !== "string" || !/https?:\/\//.test(url)) {
+        return [new Error("url should start with https://")];
+    }
+    if (typeof type !== "string" || !["twitter", "hatenabookmark"].includes(type)) {
+        return [new Error("does not support type")];
+    }
+    if (typeof id !== "string") {
+        return [new Error("does not support id")];
+    }
+};
+// server
+export const action: ActionFunction = async ({ request }) => {
+    const formData = await request.formData();
+    const form = {
+        url: formData.get("url"),
+        type: formData.get("type"),
+        id: formData.get("id")
+    };
+    const errors = validate(form);
+    if (errors) {
+        return {
+            errors: errors.map((e) => e.message).join(",")
+        };
+    }
+    await downVote({
+        type: form.type as string,
+        id: form.id as string
+    });
+    const param = new URLSearchParams([["url", form.url as string]]);
+    return redirect("/?" + param);
+};
+const DownVote = ({ type, url, id }: { type: "hatenabookmark" | "twitter"; url: string; id: string }) => {
+    const actionData = useActionData();
+    const inputRef = useRef<HTMLButtonElement>(null);
+    const transition = useTransition();
+    useEffect(() => {
+        if (actionData && actionData?.errors) {
+            inputRef?.current?.focus();
+        }
+    }, [actionData]);
+    return (
+        <>
+            <Form method="post">
+                <fieldset disabled={transition.state === "submitting"}>
+                    <input type="hidden" value={id} name={"id"} />
+                    <input type="hidden" value={type} name={"type"} />
+                    <input type="hidden" value={url} name={"url"} />
+                    <button type="submit" ref={inputRef}>
+                        👎
+                    </button>
+                </fieldset>
+            </Form>
+            {actionData && actionData?.errors && <p style={{ color: "red" }}>{actionData?.errors}</p>}
+        </>
+    );
+};
+
 export const useIndex = (props: { url: string }) => {
+    const [showController, setShowController] = useState(false);
     const [inputUrl, setInputUrl] = useState<string>(props.url);
     const onChange: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
         return setInputUrl(event.target.value ?? "");
     }, []);
-    return [{ inputUrl }, { onChange }] as const;
+    const onToggleShowController = useCallback(() => {
+        return setShowController((prevState) => !prevState);
+    }, []);
+    return [
+        { inputUrl, showController },
+        { onChange, onToggleShowController }
+    ] as const;
 };
 const trimSchema = (url: string) => {
     return url.replace(/^https:\/\//, "");
@@ -46,7 +123,7 @@ const trimSchema = (url: string) => {
 export default function Index() {
     const { twitter, hatebu, url } =
         useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string }>();
-    const [{ inputUrl }, { onChange }] = useIndex({ url });
+    const [{ inputUrl, showController }, { onChange, onToggleShowController }] = useIndex({ url });
     return (
         <div>
             <style>{`
@@ -56,9 +133,15 @@ export default function Index() {
 }
 .list-item a {
     word-break: break-all;
-}`}</style>
+}
+`}</style>
             <h1>Komesan</h1>
-            <form
+            <div style={{ position: "fixed", top: 0, right: 0, opacity: 0 }}>
+                <button onClick={onToggleShowController} style={{ margin: 0 }}>
+                    💬
+                </button>
+            </div>
+            <Form
                 method="get"
                 action="/"
                 style={{
@@ -75,7 +158,7 @@ export default function Index() {
                     style={{ flex: 1 }}
                 />
                 <button type="submit">View</button>
-            </form>
+            </Form>
             <h2>
                 <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`}>
                     はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
@@ -84,7 +167,7 @@ export default function Index() {
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {hatebu?.bookmarks?.map((bookmark) => {
                     return (
-                        <li key={bookmark.user + bookmark.comment} className={"list-item"}>
+                        <li key={bookmark.user + bookmark.comment} className={"list-item"} tabIndex={-1}>
                             <img
                                 width="16"
                                 height="16"
@@ -103,6 +186,9 @@ export default function Index() {
                                 {bookmark.user}
                             </span>
                             : <LinkItUrl>{bookmark.comment}</LinkItUrl>
+                            <div hidden={!showController}>
+                                <DownVote type={"hatenabookmark"} id={bookmark.user} url={url} />
+                            </div>
                         </li>
                     );
                 })}
@@ -113,7 +199,7 @@ export default function Index() {
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {twitter?.map((tweet) => {
                     return (
-                        <li key={tweet.id} className={"list-item"}>
+                        <li key={tweet.id} className={"list-item"} tabIndex={-1}>
                             <a
                                 href={`https://twitter.com/${tweet.username}`}
                                 style={{
@@ -144,6 +230,9 @@ export default function Index() {
                                     {new Date(tweet.created_at).toISOString()}
                                 </a>
                             </p>
+                            <div hidden={!showController}>
+                                <DownVote type={"twitter"} id={tweet.username} url={url} />
+                            </div>
                         </li>
                     );
                 })}

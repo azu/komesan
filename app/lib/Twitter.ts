@@ -1,3 +1,5 @@
+import { createId, DownVote } from "./DOWNVOTE";
+
 export type Tweets = Tweet[];
 export type Tweet = {
     author_id: string;
@@ -44,7 +46,10 @@ interface Meta {
 const filterRT = (tweet: Tweet) => {
     return !tweet.text.startsWith("RT @");
 };
-export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: string }) => {
+export const fetchTwitter = (
+    url: string,
+    { TWITTER_TOKEN, downVotes }: { TWITTER_TOKEN: string; downVotes: DownVote }
+) => {
     const query = new URLSearchParams([
         ["query", "url:" + url.replace(/^https?:\/\//, "")],
         ["max_results", "20"],
@@ -78,6 +83,13 @@ export const fetchTwitter = (url: string, { TWITTER_TOKEN }: { TWITTER_TOKEN: st
                         profile_image_url: user.profile_image_url
                     } as Tweet;
                 })
-                .filter((tweet) => filterRT(tweet));
+                .filter((tweet) => filterRT(tweet))
+                .filter((tweet) => {
+                    const key = createId({
+                        id: tweet.username,
+                        type: "twitter"
+                    });
+                    return !Object.prototype.hasOwnProperty.call(downVotes, key);
+                });
         });
 };
