@@ -1,4 +1,4 @@
-export interface BookmarkSite {
+export type BookmarkSite = {
     screenshot: string;
     bookmarks: Bookmark[]; // comment only
     requested_url: string;
@@ -8,7 +8,7 @@ export interface BookmarkSite {
     title: string;
     count: number;
     entry_url: string;
-}
+} | null;
 
 export interface Bookmark {
     user: string;
@@ -34,9 +34,12 @@ export const fetchHatenaBookmark = (url: string): Promise<BookmarkSite> => {
         })
         .then((json) => {
             const result = json as BookmarkSite;
+            if (!result) {
+                return null;
+            }
             return {
                 ...result,
-                bookmarks: result.bookmarks.filter((bookmark) => bookmark.comment.trim().length > 0)
+                bookmarks: result?.bookmarks?.filter((bookmark) => bookmark.comment.trim().length > 0)
             };
         });
 };
