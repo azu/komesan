@@ -1,6 +1,8 @@
 # komesan
 
-View comment about the site.
+View comments about the site.
+
+Supported Web Services:
 
 - はてなブックマーク
 - Twitter
