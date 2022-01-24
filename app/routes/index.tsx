@@ -195,6 +195,7 @@ export default function Index() {
                         return (
                             <li key={bookmark.user + bookmark.comment} className={"list-item"} tabIndex={-1}>
                                 <img
+                                    width="16"
                                     height="16"
                                     src={`https://cdn.profile-image.st-hatena.com/users/${bookmark.user}/profile.png`}
                                     alt={""}
@@ -237,6 +238,7 @@ export default function Index() {
                                     rel={"noopener noreferrer"}
                                 >
                                     <img
+                                        width="16"
                                         height="16"
                                         src={tweet.profile_image_url}
                                         alt={""}
