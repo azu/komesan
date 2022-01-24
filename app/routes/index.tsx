@@ -288,7 +288,7 @@ export default function Index(props: IndexProps) {
                 </ul>
             </div>
             <footer>
-                <p>指定したURLのはてなブックマークとTwitterのコメントを表示するサイトです。</p>
+                <p>Komesanは指定したURLのはてなブックマークとTwitterのコメントを表示するサイトです。</p>
                 <p>
                     <a href={"https://github.com/azu/komesan"} target={"_blank"} rel={"noopener noreferrer"}>
                         Source Code
