@@ -6,6 +6,7 @@ import { LinkItUrl } from "react-linkify-it";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createStorage } from "../lib/DOWNVOTE";
 import styles from "../styles/simple.css";
+import { min } from "rxjs";
 
 export function links() {
     return [{ rel: "stylesheet", href: styles }];
@@ -17,12 +18,14 @@ export const headers: HeadersFunction = () => {
     };
 };
 
-export let loader: LoaderFunction = async ({ context, request }) => {
+export let loader: LoaderFunction = async ({ context, request, params }) => {
     const url = new URL(request.url);
     const urlParam = url.searchParams.get("url");
+    const enableMinMode = url.searchParams.has("min");
     if (!urlParam) {
         return {
             url: "",
+            min: enableMinMode,
             twitter: [],
             hatebu: undefined
         };
@@ -47,6 +50,7 @@ export let loader: LoaderFunction = async ({ context, request }) => {
     ]);
     return {
         url: /^https?:/.test(urlParam) ? urlParam : "",
+        min: enableMinMode,
         twitter,
         hatebu
     };
@@ -135,13 +139,24 @@ export const useIndex = (props: { url: string }) => {
 const trimSchema = (url: string) => {
     return url.replace(/^https:\/\//, "");
 };
-export default function Index() {
-    const { twitter, hatebu, url } =
-        useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string }>();
+export type IndexProps = {
+    // enable min mode
+    min?: boolean;
+};
+export default function Index(props: IndexProps) {
+    const { twitter, hatebu, url, min } =
+        useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string; min: boolean }>();
     const [{ inputUrl, showController, noResult }, { onChange, onToggleShowController }] = useIndex({ url });
     return (
-        <div>
+        <div className={min ? "min" : ""}>
             <style>{`
+[hidden] {
+    display: none !important;
+}
+.min h2 {
+    font-size: 14px;
+    font-weight: bold;
+}
 .list-item {
     padding: 0.5em 0;
     border-bottom: 1px solid #ddd;
@@ -150,7 +165,7 @@ export default function Index() {
     word-break: break-all;
 }
 `}</style>
-            <h1>
+            <h1 hidden={min}>
                 <Link to={"/"}>Komesan</Link>
             </h1>
             <div style={{ position: "fixed", top: 0, right: 0, opacity: 0 }}>
@@ -165,6 +180,7 @@ export default function Index() {
                     display: "flex",
                     alignItems: "flex-end"
                 }}
+                hidden={min}
             >
                 <input
                     name="url"

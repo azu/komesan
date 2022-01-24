@@ -16,6 +16,16 @@ Supported Web Services:
 https://komesan.pages.dev/?url=<encoded url>
 ```
 
+## Tips
+
+### min mode
+
+minimal display mode. It is useful to embed to webpage;
+
+```
+https://komesan.pages.dev/?url=<encoded url>&min
+```
+
 ## Develop
 
     yarn install
