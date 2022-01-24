@@ -179,8 +179,8 @@ export default function Index() {
             <div hidden={!noResult}>
                 <p>
                     Example:{" "}
-                    <Link to={"/?url=https://komesan.pages.dev/"}>
-                        https://komesan.pages.dev/?url=https://komesan.pages.dev
+                    <Link to={"/?url=https://pages.cloudflare.com"}>
+                        https://komesan.pages.dev/?url=https://pages.cloudflare.com/
                     </Link>
                 </p>
             </div>
