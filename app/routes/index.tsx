@@ -156,6 +156,7 @@ export default function Index(props: IndexProps) {
 .min h2 {
     font-size: 14px;
     font-weight: bold;
+    margin: 1em 0;
 }
 .list-item {
     padding: 0.5em 0;
