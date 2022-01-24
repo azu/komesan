@@ -153,11 +153,16 @@ export default function Index(props: IndexProps) {
 [hidden] {
     display: none !important;
 }
+/* min mode */
 .min h2 {
     font-size: 14px;
     font-weight: bold;
     margin: 1em 0;
 }
+.min {
+    font-size: 14px;
+}
+/* normal */
 .list-item {
     padding: 0.5em 0;
     border-bottom: 1px solid #ddd;
