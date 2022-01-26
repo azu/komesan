@@ -198,6 +198,13 @@ export default function Index(props: IndexProps) {
                 />
                 <button type="submit">View</button>
             </Form>
+            {/* Site URL */}
+            <p hidden={!min}>
+                🔗{" "}
+                <a href={url} target={"_blank"} rel={"noopener noreferrer"}>
+                    {url}
+                </a>
+            </p>
             <div hidden={!noResult}>
                 <p>
                     Example:{" "}
