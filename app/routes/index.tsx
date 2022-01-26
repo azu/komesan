@@ -295,6 +295,14 @@ export default function Index(props: IndexProps) {
             <footer>
                 <p>Komesanは指定したURLのはてなブックマークとTwitterのコメントを表示するサイトです。</p>
                 <p>
+                    Bookmarklet:{" "}
+                    <a
+                        href={`javascript:void(window.open("https://komesan.pages.dev/?url="+encodeURIComponent(location.href)))`}
+                    >
+                        Komesan
+                    </a>
+                </p>
+                <p>
                     <a href={"https://github.com/azu/komesan"} target={"_blank"} rel={"noopener noreferrer"}>
                         Source Code
                     </a>{" "}
