@@ -1,12 +1,20 @@
-import { Form, HeadersFunction, Link, LoaderFunction, useActionData, useLoaderData, useTransition } from "remix";
+import {
+    ActionFunction,
+    Form,
+    HeadersFunction,
+    Link,
+    LoaderFunction,
+    redirect,
+    useActionData,
+    useLoaderData,
+    useTransition
+} from "remix";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
-import { ActionFunction, redirect } from "remix";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createStorage } from "../lib/DOWNVOTE";
 import styles from "../styles/simple.css";
-import { min } from "rxjs";
 
 export function links() {
     return [{ rel: "stylesheet", href: styles }];
@@ -77,7 +85,8 @@ export const action: ActionFunction = async ({ request, context }) => {
     const form = {
         url: formData.get("url"),
         type: formData.get("type"),
-        id: formData.get("id")
+        id: formData.get("id"),
+        min: formData.has("min")
     };
     const errors = validate(form);
     if (errors) {
@@ -90,10 +99,20 @@ export const action: ActionFunction = async ({ request, context }) => {
         type: form.type as string,
         id: form.id as string
     });
-    const param = new URLSearchParams([["url", form.url as string]]);
+    const param = new URLSearchParams([["url", form.url as string]].concat(form.min ? [["min", "1"]] : []));
     return redirect("/?" + param);
 };
-const DownVote = ({ type, url, id }: { type: "hatenabookmark" | "twitter"; url: string; id: string }) => {
+const DownVote = ({
+    type,
+    url,
+    id,
+    min
+}: {
+    type: "hatenabookmark" | "twitter";
+    url: string;
+    id: string;
+    min: boolean;
+}) => {
     const actionData = useActionData();
     const inputRef = useRef<HTMLButtonElement>(null);
     const transition = useTransition();
@@ -109,6 +128,7 @@ const DownVote = ({ type, url, id }: { type: "hatenabookmark" | "twitter"; url: 
                     <input type="hidden" value={id} name={"id"} />
                     <input type="hidden" value={type} name={"type"} />
                     <input type="hidden" value={url} name={"url"} />
+                    <input name="min" checked={min} type="hidden" />
                     <button type="submit" ref={inputRef}>
                         👎
                     </button>
@@ -235,7 +255,7 @@ export default function Index(props: IndexProps) {
                                 </span>
                                 : <LinkItUrl>{bookmark.comment}</LinkItUrl>
                                 <div hidden={!showController}>
-                                    <DownVote type={"hatenabookmark"} id={bookmark.user} url={url} />
+                                    <DownVote type={"hatenabookmark"} id={bookmark.user} url={url} min={min} />
                                 </div>
                             </li>
                         );
