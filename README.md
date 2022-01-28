@@ -52,6 +52,12 @@ Run develop mode.
 
     # Open http://localhost:8080?url=https://example.com
 
+## Deployment
+
+Cloudflare Pages + [Remix](https://remix.run/).
+
+See [Deploy a Remix site · Cloudflare Pages docs](https://developers.cloudflare.com/pages/framework-guides/remix)
+
 ## Contributing
 
 1. Fork it!
