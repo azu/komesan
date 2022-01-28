@@ -296,13 +296,9 @@ export default function Index(props: IndexProps) {
                                         paddingRight: "4px"
                                     }}
                                 />
-                                <span
-                                    style={{
-                                        color: "#4B4B4B"
-                                    }}
-                                >
+                                <a href={`https://b.hatena.ne.jp/${bookmark.user}/`} rel={"noopener noreferrer"}>
                                     {bookmark.user}
-                                </span>
+                                </a>
                                 : <LinkItUrl>{bookmark.comment}</LinkItUrl>
                                 <div hidden={!showController}>
                                     <DownVote type={"hatenabookmark"} id={bookmark.user} url={url} min={min} />
