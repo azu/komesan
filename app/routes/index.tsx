@@ -31,37 +31,63 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
     const url = new URL(request.url);
     const urlParam = url.searchParams.get("url");
     const enableMinMode = url.searchParams.has("min");
+    const services = url.searchParams.get("services")?.split(",") ?? [];
+    const enableServices = {
+        hatebu: true, // enable by default
+        twitter: true,
+        hackerNews: services.includes("hackerNews") ?? false
+    };
     if (!urlParam) {
         return {
             url: "",
             min: enableMinMode,
             twitter: [],
-            hatebu: undefined
+            hatebu: undefined,
+            hackerNews: undefined
         };
     }
     const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
     const storage = createStorage(context);
     const downVotes = await storage.getDownVotes();
+    const startTime = Date.now();
     const [hatebu, twitter, hackerNews] = await Promise.all([
-        fetchHatenaBookmark(urlParam, {
-            downVotes
-        }).catch((error) => {
-            console.error("fetchHatenaBookmark", error);
-            return [];
-        }),
-        fetchTwitter(urlParam, {
-            downVotes,
-            TWITTER_TOKEN
-        }).catch((error) => {
-            console.error("fetchTwitter", error);
-            return;
-        }),
-        fetchHackerNews(urlParam, {
-            downVotes
-        }).catch((error) => {
-            console.error("fetchTwitter", error);
-            return;
-        })
+        enableServices.hatebu
+            ? fetchHatenaBookmark(urlParam, {
+                  downVotes
+              })
+                  .catch((error) => {
+                      console.error("fetchHatenaBookmark", error);
+                      return [];
+                  })
+                  .finally(() => {
+                      console.log(`HatenaBookMark: ${Date.now() - startTime}ms`);
+                  })
+            : undefined,
+        enableServices.twitter
+            ? fetchTwitter(urlParam, {
+                  downVotes,
+                  TWITTER_TOKEN
+              })
+                  .catch((error) => {
+                      console.error("fetchTwitter", error);
+                      return;
+                  })
+                  .finally(() => {
+                      console.log(`Twitter: ${Date.now() - startTime}ms`);
+                  })
+            : [],
+        enableServices.hackerNews
+            ? fetchHackerNews(urlParam, {
+                  downVotes
+              })
+                  .catch((error) => {
+                      console.error("fetchTwitter", error);
+                      return;
+                  })
+                  .finally(() => {
+                      console.log(`HackerNews: ${Date.now() - startTime}ms`);
+                  })
+            : undefined
     ]);
     return {
         url: /^https?:/.test(urlParam) ? urlParam : "",
@@ -172,15 +198,13 @@ export type IndexProps = {
     min?: boolean;
 };
 export default function Index(props: IndexProps) {
-    const { twitter, hatebu, hackerNews, url, min } =
-        useLoaderData<{
-            twitter: Tweets;
-            hatebu: BookmarkSite;
-            hackerNews: HackerNewsResult;
-            url: string;
-            min: boolean;
-        }>();
-    console.log("hackerNews", hackerNews);
+    const { twitter, hatebu, hackerNews, url, min } = useLoaderData<{
+        twitter: Tweets;
+        hatebu: BookmarkSite;
+        hackerNews: HackerNewsResult;
+        url: string;
+        min: boolean;
+    }>();
     const [{ inputUrl, showController, noResult }, { onChange, onToggleShowController }] = useIndex({ url });
     return (
         <div className={min ? "min" : ""}>
@@ -255,7 +279,7 @@ export default function Index(props: IndexProps) {
             <div hidden={noResult}>
                 <h2>
                     <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
-                        はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
+                        はてなブックマーク({hatebu?.bookmarks?.length ?? 0}/{hatebu?.count ?? 0})
                     </a>
                 </h2>
                 <ul style={{ listStyle: "none", padding: "0" }}>
@@ -338,14 +362,14 @@ export default function Index(props: IndexProps) {
                     })}
                 </ul>
             </div>
-            <div hidden={noResult}>
+            <div hidden={noResult || !hackerNews}>
                 <h2>
                     <a href={hackerNews?.url} rel={"noopener noreferrer"}>
                         HackerNews
                     </a>
                 </h2>
                 <ul style={{ listStyle: "none", padding: "0" }}>
-                    {hackerNews.stories?.map((story) => {
+                    {hackerNews?.stories?.map((story) => {
                         return (
                             <li key={story.url} className={"list-item"} tabIndex={-1}>
                                 <a
@@ -391,7 +415,7 @@ export default function Index(props: IndexProps) {
                         dangerouslySetInnerHTML={{
                             __html: `<a href='javascript:void(window.open("https://komesan.pages.dev/?url="+encodeURIComponent(location.href)))'>Komesan</a>`
                         }}
-                    ></span>
+                    />
                 </p>
                 <p>
                     <a href={"https://github.com/azu/komesan"} target={"_blank"} rel={"noopener noreferrer"}>

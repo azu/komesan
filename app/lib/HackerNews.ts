@@ -73,11 +73,13 @@ export type HackerNewsComment = {
     commentUrl: string;
     text: string;
 };
-export type HackerNewsResult = {
-    count: number; // total hit
-    url: string; // https://hn.algolia.com/?dateRange=all&page=0&prefix=false&query=%22https%3A%2F%2Fpages.cloudflare.com%22&sort=byPopularity&type=all
-    stories: HackerNewsStory[];
-};
+export type HackerNewsResult =
+    | {
+          count: number; // total hit
+          url: string; // https://hn.algolia.com/?dateRange=all&page=0&prefix=false&query=%22https%3A%2F%2Fpages.cloudflare.com%22&sort=byPopularity&type=all
+          stories: HackerNewsStory[];
+      }
+    | undefined;
 
 const createStories = (result: HackerNewsSeachResult): HackerNewsStory[] => {
     const stories: HackerNewsStory[] = [];
