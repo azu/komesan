@@ -73,13 +73,11 @@ export type HackerNewsComment = {
     commentUrl: string;
     text: string;
 };
-export type HackerNewsResult =
-    | {
-          count: number; // total hit
-          url: string; // https://hn.algolia.com/?dateRange=all&page=0&prefix=false&query=%22https%3A%2F%2Fpages.cloudflare.com%22&sort=byPopularity&type=all
-          stories: HackerNewsStory[];
-      }
-    | undefined;
+export type HackerNewsResult = {
+    count: number; // total hit
+    url: string; // https://hn.algolia.com/?dateRange=all&page=0&prefix=false&query=%22https%3A%2F%2Fpages.cloudflare.com%22&sort=byPopularity&type=all
+    stories: HackerNewsStory[];
+};
 
 const createStories = (result: HackerNewsSeachResult): HackerNewsStory[] => {
     const stories: HackerNewsStory[] = [];
@@ -127,7 +125,7 @@ const createStories = (result: HackerNewsSeachResult): HackerNewsStory[] => {
 };
 export const fetchHackerNews = (url: string, { downVotes }: { downVotes: DownVote }): Promise<HackerNewsResult> => {
     const query = encodeURIComponent(`"${url}"`);
-    return fetch(`http://hn.algolia.com/api/v1/search_by_date?query=${query}`, {
+    return fetch(`http://hn.algolia.com/api/v1/search_by_date?query=${query}"`, {
         headers: {
             "User-Agent": "komesan.pages.dev"
         }
