@@ -127,7 +127,7 @@ const createStories = (result: HackerNewsSeachResult): HackerNewsStory[] => {
 };
 export const fetchHackerNews = (url: string, { downVotes }: { downVotes: DownVote }): Promise<HackerNewsResult> => {
     const query = encodeURIComponent(`"${url}"`);
-    return fetch(`http://hn.algolia.com/api/v1/search_by_date?query=${query}"`, {
+    return fetch(`http://hn.algolia.com/api/v1/search_by_date?query=${query}`, {
         headers: {
             "User-Agent": "komesan.pages.dev"
         }
