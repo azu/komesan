@@ -15,6 +15,7 @@ import { LinkItUrl } from "react-linkify-it";
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createStorage } from "../lib/DOWNVOTE";
 import styles from "../styles/simple.css";
+import { fetchHackerNews, HackerNewsResult } from "../lib/HackerNews";
 
 export function links() {
     return [{ rel: "stylesheet", href: styles }];
@@ -30,37 +31,70 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
     const url = new URL(request.url);
     const urlParam = url.searchParams.get("url");
     const enableMinMode = url.searchParams.has("min");
+    const services = url.searchParams.get("services")?.split(",") ?? [];
+    const enableServices = {
+        hatebu: true, // enable by default
+        twitter: true,
+        hackerNews: services.includes("hackerNews") ?? false
+    };
     if (!urlParam) {
         return {
             url: "",
             min: enableMinMode,
             twitter: [],
-            hatebu: undefined
+            hatebu: undefined,
+            hackerNews: undefined
         };
     }
     const TWITTER_TOKEN = context.TWITTER_TOKEN as string;
     const storage = createStorage(context);
     const downVotes = await storage.getDownVotes();
-    const [hatebu, twitter] = await Promise.all([
-        fetchHatenaBookmark(urlParam, {
-            downVotes
-        }).catch((error) => {
-            console.error("fetchHatenaBookmark", error);
-            return [];
-        }),
-        fetchTwitter(urlParam, {
-            downVotes,
-            TWITTER_TOKEN
-        }).catch((error) => {
-            console.error("fetchTwitter", error);
-            return;
-        })
+    const startTime = Date.now();
+    const [hatebu, twitter, hackerNews] = await Promise.all([
+        enableServices.hatebu
+            ? fetchHatenaBookmark(urlParam, {
+                  downVotes
+              })
+                  .catch((error) => {
+                      console.error("fetchHatenaBookmark", error);
+                      return [];
+                  })
+                  .finally(() => {
+                      console.log(`HatenaBookMark: ${Date.now() - startTime}ms`);
+                  })
+            : undefined,
+        enableServices.twitter
+            ? fetchTwitter(urlParam, {
+                  downVotes,
+                  TWITTER_TOKEN
+              })
+                  .catch((error) => {
+                      console.error("fetchTwitter", error);
+                      return;
+                  })
+                  .finally(() => {
+                      console.log(`Twitter: ${Date.now() - startTime}ms`);
+                  })
+            : [],
+        enableServices.hackerNews
+            ? fetchHackerNews(urlParam, {
+                  downVotes
+              })
+                  .catch((error) => {
+                      console.error("fetchTwitter", error);
+                      return;
+                  })
+                  .finally(() => {
+                      console.log(`HackerNews: ${Date.now() - startTime}ms`);
+                  })
+            : undefined
     ]);
     return {
         url: /^https?:/.test(urlParam) ? urlParam : "",
         min: enableMinMode,
         twitter,
-        hatebu
+        hatebu,
+        hackerNews
     };
 };
 type NullableFormValue<T> = {
@@ -128,7 +162,7 @@ const DownVote = ({
                     <input type="hidden" value={id} name={"id"} />
                     <input type="hidden" value={type} name={"type"} />
                     <input type="hidden" value={url} name={"url"} />
-                    <input name="min" checked={min} type="hidden" />
+                    <input name="min" checked={min} type="hidden" readOnly={true} />
                     <button type="submit" ref={inputRef}>
                         👎
                     </button>
@@ -164,8 +198,13 @@ export type IndexProps = {
     min?: boolean;
 };
 export default function Index(props: IndexProps) {
-    const { twitter, hatebu, url, min } =
-        useLoaderData<{ twitter: Tweets; hatebu: BookmarkSite | undefined; url: string; min: boolean }>();
+    const { twitter, hatebu, hackerNews, url, min } = useLoaderData<{
+        twitter: Tweets;
+        hatebu: BookmarkSite;
+        hackerNews: HackerNewsResult;
+        url: string;
+        min: boolean;
+    }>();
     const [{ inputUrl, showController, noResult }, { onChange, onToggleShowController }] = useIndex({ url });
     return (
         <div className={min ? "min" : ""}>
@@ -189,6 +228,17 @@ export default function Index(props: IndexProps) {
 }
 .list-item a {
     word-break: break-all;
+}
+.list-item pre {
+    padding: 1rem 0;
+    max-width: 100%;
+    overflow: auto;
+    overflow-x: auto;
+    color: var(--preformatted);
+    background: var(--accent-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding-left: 0;
 }
 `}</style>
             <h1 hidden={min}>
@@ -229,7 +279,7 @@ export default function Index(props: IndexProps) {
             <div hidden={noResult}>
                 <h2>
                     <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
-                        はてなブックマーク({hatebu?.bookmarks.length ?? 0}/{hatebu?.count ?? 0})
+                        はてなブックマーク({hatebu?.bookmarks?.length ?? 0}/{hatebu?.count ?? 0})
                     </a>
                 </h2>
                 <ul style={{ listStyle: "none", padding: "0" }}>
@@ -305,8 +355,48 @@ export default function Index(props: IndexProps) {
                                     </a>
                                 </p>
                                 <div hidden={!showController}>
-                                    <DownVote type={"twitter"} id={tweet.username} url={url} />
+                                    <DownVote type={"twitter"} id={tweet.username} url={url} min={min} />
                                 </div>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+            <div hidden={noResult || !hackerNews}>
+                <h2>
+                    <a href={hackerNews?.url} rel={"noopener noreferrer"}>
+                        HackerNews
+                    </a>
+                </h2>
+                <ul style={{ listStyle: "none", padding: "0" }}>
+                    {hackerNews?.stories?.map((story) => {
+                        return (
+                            <li key={story.url} className={"list-item"} tabIndex={-1}>
+                                <a
+                                    href={story.url}
+                                    style={{
+                                        paddingRight: "4px"
+                                    }}
+                                    rel={"noopener noreferrer"}
+                                >
+                                    {story.title}
+                                </a>
+                                {story.comments.map((comment, index) => {
+                                    return (
+                                        <div>
+                                            <a href={comment.commentUrl} style={{ color: "#828282" }}>
+                                                {comment.author}
+                                            </a>
+                                            :
+                                            <div
+                                                key={comment.commentUrl}
+                                                dangerouslySetInnerHTML={{
+                                                    __html: comment.text
+                                                }}
+                                            />
+                                        </div>
+                                    );
+                                })}
                             </li>
                         );
                     })}
@@ -321,11 +411,11 @@ export default function Index(props: IndexProps) {
                 <p>Komesanは指定したURLのはてなブックマークとTwitterのコメントを表示するサイトです。</p>
                 <p>
                     Bookmarklet:{" "}
-                    <a
-                        href={`javascript:void(window.open("https://komesan.pages.dev/?url="+encodeURIComponent(location.href)))`}
-                    >
-                        Komesan
-                    </a>
+                    <span
+                        dangerouslySetInnerHTML={{
+                            __html: `<a href='javascript:void(window.open("https://komesan.pages.dev/?url="+encodeURIComponent(location.href)))'>Komesan</a>`
+                        }}
+                    />
                 </p>
                 <p>
                     <a href={"https://github.com/azu/komesan"} target={"_blank"} rel={"noopener noreferrer"}>

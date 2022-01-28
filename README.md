@@ -6,7 +6,8 @@ Supported Web Services:
 
 - はてなブックマーク
 - Twitter
-
+- HackerNews
+    - `&services=hackerNews`
 ## Usage
 
 1. Visit https://komesan.pages.dev/
@@ -24,6 +25,14 @@ minimal display mode. It is useful to embed to webpage;
 
 ```
 https://komesan.pages.dev/?url=<encoded url>&min
+```
+
+### Add services
+
+Add Hacker News
+
+```
+https://komesan.pages.dev/?url=<encoded url>&services=hackerNews
 ```
 
 ## Develop

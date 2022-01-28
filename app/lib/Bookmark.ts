@@ -27,7 +27,11 @@ export interface Related {
 }
 
 export const fetchHatenaBookmark = (url: string, { downVotes }: { downVotes: DownVote }): Promise<BookmarkSite> => {
-    return fetch(`https://b.hatena.ne.jp/entry/json/?url=${encodeURIComponent(url)}`)
+    return fetch(`https://b.hatena.ne.jp/entry/json/?url=${encodeURIComponent(url)}`, {
+        headers: {
+            "User-Agent": "komesan.pages.dev"
+        }
+    })
         .then((res) => {
             if (!res.ok) {
                 return Promise.reject(new Error("response error"));
