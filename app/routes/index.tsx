@@ -37,7 +37,8 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
         twitter: true,
         hackerNews: services.includes("hackerNews") ?? false
     };
-    if (!urlParam) {
+    const isUrl = urlParam?.startsWith("http") || urlParam?.startsWith("https");
+    if (!urlParam || !isUrl) {
         return {
             url: "",
             min: enableMinMode,
