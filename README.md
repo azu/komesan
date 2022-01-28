@@ -7,7 +7,7 @@ Supported Web Services:
 - はてなブックマーク
 - Twitter
 - HackerNews
-    - `&services=hackerNews`
+    - `&service=hackerNews`
 ## Usage
 
 1. Visit https://komesan.pages.dev/
@@ -32,7 +32,7 @@ https://komesan.pages.dev/?url=<encoded url>&min
 Add Hacker News
 
 ```
-https://komesan.pages.dev/?url=<encoded url>&services=hackerNews
+https://komesan.pages.dev/?url=<encoded url>&service=hackerNews
 ```
 
 ## Develop
