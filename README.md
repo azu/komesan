@@ -39,6 +39,14 @@ https://komesan.pages.dev/?url=<encoded url>&service=hackerNews
 
 ## Develop
 
+Create `.env` file.
+
+    TWITTER_TOKEN=<Twitter API v2 Bearer Token>
+
+For mor details, please see <https://developer.twitter.com/>
+
+Run develop mode.
+
     yarn install
     yarn dev
 
