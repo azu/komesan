@@ -21,7 +21,9 @@ https://komesan.pages.dev/?url=<encoded url>
 
 ### min mode
 
-minimal display mode. It is useful to embed to webpage;
+Minimal display mode. It is useful to embed to webpage by userscript.
+
+:warning: site owner should not use this feature.
 
 ```
 https://komesan.pages.dev/?url=<encoded url>&min
