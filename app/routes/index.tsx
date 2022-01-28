@@ -310,7 +310,7 @@ export default function Index(props: IndexProps) {
             </div>
             <div hidden={noResult}>
                 <h2>
-                    <a href={`https://twitter.com/search?f=realtime&q=${url}`} rel={"noopener noreferrer"}>
+                    <a href={`https://twitter.com/search?f=live&q=${url}`} rel={"noopener noreferrer"}>
                         Twitter
                     </a>
                 </h2>
