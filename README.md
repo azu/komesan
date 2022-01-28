@@ -6,6 +6,7 @@ Supported Web Services:
 
 - はてなブックマーク
 - Twitter
+- HackerNews
 
 ## Usage
 
