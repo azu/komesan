@@ -416,8 +416,9 @@ export default function Index(props: IndexProps) {
                 </p>
                 <p>
                     <a href={"https://github.com/sponsors/azu"} target={"_blank"} rel={"noopener noreferrer"}>
-                        GitHub Sponsorsでサイトを支援できます
+                        GitHub Sponsors
                     </a>
+                    でサイトを支援できます
                 </p>
                 <p>
                     <a href={"https://github.com/azu/komesan"} target={"_blank"} rel={"noopener noreferrer"}>
