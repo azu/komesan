@@ -279,7 +279,11 @@ export default function Index(props: IndexProps) {
             </div>
             <div hidden={noResult}>
                 <h2>
-                    <a href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`} rel={"noopener noreferrer"}>
+                    <a
+                        href={`https://b.hatena.ne.jp/entry/s/${trimSchema(url)}`}
+                        target={"_blank"}
+                        rel={"noopener noreferrer"}
+                    >
                         はてなブックマーク({hatebu?.bookmarks?.length ?? 0}/{hatebu?.count ?? 0})
                     </a>
                 </h2>
@@ -311,7 +315,11 @@ export default function Index(props: IndexProps) {
             </div>
             <div hidden={noResult}>
                 <h2>
-                    <a href={`https://twitter.com/search?f=live&q=${url}`} rel={"noopener noreferrer"}>
+                    <a
+                        href={`https://twitter.com/search?f=live&q=${url}`}
+                        target={"_blank"}
+                        rel={"noopener noreferrer"}
+                    >
                         Twitter
                     </a>
                 </h2>
@@ -361,7 +369,7 @@ export default function Index(props: IndexProps) {
             </div>
             <div hidden={noResult || !hackerNews}>
                 <h2>
-                    <a href={hackerNews?.url} rel={"noopener noreferrer"}>
+                    <a href={hackerNews?.url} target={"_blank"} rel={"noopener noreferrer"}>
                         HackerNews
                     </a>
                 </h2>
