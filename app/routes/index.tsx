@@ -301,7 +301,11 @@ export default function Index(props: IndexProps) {
                                         paddingRight: "4px"
                                     }}
                                 />
-                                <a href={`https://b.hatena.ne.jp/${bookmark.user}/`} rel={"noopener noreferrer"}>
+                                <a
+                                    href={`https://b.hatena.ne.jp/${bookmark.user}/`}
+                                    target={"_blank"}
+                                    rel={"noopener noreferrer"}
+                                >
                                     {bookmark.user}
                                 </a>
                                 : <LinkItUrl>{bookmark.comment}</LinkItUrl>
@@ -332,6 +336,7 @@ export default function Index(props: IndexProps) {
                                     style={{
                                         paddingRight: "4px"
                                     }}
+                                    target={"_blank"}
                                     rel={"noopener noreferrer"}
                                 >
                                     <img
@@ -382,6 +387,7 @@ export default function Index(props: IndexProps) {
                                     style={{
                                         paddingRight: "4px"
                                     }}
+                                    target={"_blank"}
                                     rel={"noopener noreferrer"}
                                 >
                                     {story.title}
@@ -389,7 +395,12 @@ export default function Index(props: IndexProps) {
                                 {story.comments.map((comment, index) => {
                                     return (
                                         <div>
-                                            <a href={comment.commentUrl} style={{ color: "#828282" }}>
+                                            <a
+                                                href={comment.commentUrl}
+                                                style={{ color: "#828282" }}
+                                                target={"_blank"}
+                                                rel={"noopener noreferrer"}
+                                            >
                                                 {comment.author}
                                             </a>
                                             :
