@@ -42,6 +42,7 @@ https://komesan.pages.dev/?url=<encoded url>&service=hackerNews
 Create `.dev.vars` file.
 
     TWITTER_TOKEN=<Twitter API v2 Bearer Token>
+    KOMESAN_TOKEN=XXX
 
 For mor details, please see <https://developer.twitter.com/>
 
