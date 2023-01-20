@@ -24,6 +24,7 @@ export async function action({ request, context }: ActionArgs) {
         return redirect(`/`);
     }
     const body = await request.text();
+    console.log("body", body);
     const { type, users } = z
         .object({
             type: z.literal("hatenabookmark").or(z.literal("twitter")),
