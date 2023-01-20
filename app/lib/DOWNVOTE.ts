@@ -11,13 +11,17 @@ export type DownVote = {
 export const createId = (req: DownvoteRequest) => `${req.type}::${req.id}`;
 export const createStorage = (env: { DOWNVOTE: KVNamespace }) => {
     const getDownVotes = async (): Promise<DownVote> => {
-        const res = await env.DOWNVOTE.get("DOWNVOTE", {
-            type: "json"
-        });
-        if (res) {
-            return res as DownVote;
+        try {
+            const res = await env.DOWNVOTE.get("DOWNVOTE", {
+                type: "json"
+            });
+            if (res) {
+                return res as DownVote;
+            }
+            return {};
+        } catch (e) {
+            return {};
         }
-        return {};
     };
     const downVote = async (req: DownvoteRequest) => {
         const prevVotes = await getDownVotes();
