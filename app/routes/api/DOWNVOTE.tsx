@@ -1,6 +1,6 @@
 import { ActionArgs, redirect } from "@remix-run/cloudflare";
 import { z } from "zod";
-import { createStorage } from "../lib/DOWNVOTE";
+import { createStorage } from "../../lib/DOWNVOTE";
 
 const formDataToJSON = (data: FormData) => {
     return Object.fromEntries(data.entries());
