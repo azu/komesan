@@ -31,7 +31,10 @@ export async function action({ request, context }: ActionArgs) {
             users: z.array(z.string())
         })
         .parse(JSON.parse(body));
-
+    console.log({
+        type,
+        users
+    });
     // @ts-expect-error: no types
     const downvoteStorage = await createStorage(context);
     const requests = users.map((user) => {
