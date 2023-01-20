@@ -26,7 +26,7 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
     const services = url.searchParams.getAll("service");
     const enableServices = {
         hatebu: true, // enable by default
-        twitter: true,
+        twitter: url.origin === "https://komesan.page.dev" || url.host === "localhost",
         hackerNews: services.includes("hackerNews") ?? false
     };
     const isUrl = urlParam?.startsWith("http") || urlParam?.startsWith("https");
