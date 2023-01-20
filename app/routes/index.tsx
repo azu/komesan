@@ -1,4 +1,4 @@
-import { HeadersFunction, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, HeadersFunction, redirect } from "@remix-run/cloudflare";
 import { Form, Link, useActionData, useLoaderData, useTransition } from "@remix-run/react";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
@@ -121,6 +121,7 @@ export const action: ActionFunction = async ({ request, context }) => {
             errors: errors.map((e) => e.message).join(",")
         };
     }
+    // @ts-expect-error: no type
     const storage = createStorage(context);
     await storage.downVote({
         type: form.type as string,
