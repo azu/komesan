@@ -13,8 +13,8 @@
     "prepare": "git config --local core.hooksPath .githooks"
   },
   "dependencies": {
+    "@remix-run/cloudflare": "^1.11.0",
     "@remix-run/cloudflare-pages": "^1.11.0",
-    "@remix-run/node": "^1.11.0",
     "@remix-run/react": "^1.11.0",
     "he": "^1.2.0",
     "react": "^18.2.0",
