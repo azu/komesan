@@ -1,14 +1,5 @@
-import {
-    ActionFunction,
-    Form,
-    HeadersFunction,
-    Link,
-    LoaderFunction,
-    redirect,
-    useActionData,
-    useLoaderData,
-    useTransition
-} from "remix";
+import { ActionFunction, HeadersFunction, redirect } from "@remix-run/cloudflare";
+import { Form, Link, useActionData, useLoaderData, useTransition } from "@remix-run/react";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
@@ -16,6 +7,7 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState }
 import { createStorage } from "../lib/DOWNVOTE";
 import styles from "../styles/simple.css";
 import { fetchHackerNews, HackerNewsResult } from "../lib/HackerNews";
+import { LoaderFunction } from "@remix-run/router";
 
 export function links() {
     return [{ rel: "stylesheet", href: styles }];
@@ -129,6 +121,7 @@ export const action: ActionFunction = async ({ request, context }) => {
             errors: errors.map((e) => e.message).join(",")
         };
     }
+    // @ts-expect-error: no type
     const storage = createStorage(context);
     await storage.downVote({
         type: form.type as string,
