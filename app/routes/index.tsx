@@ -1,4 +1,5 @@
-import { Form, Link, redirect, useActionData, useLoaderData, useTransition } from "remix";
+import { HeadersFunction, redirect } from "@remix-run/cloudflare";
+import { Form, Link, useActionData, useLoaderData, useTransition } from "@remix-run/react";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
@@ -6,6 +7,7 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState }
 import { createStorage } from "../lib/DOWNVOTE";
 import styles from "../styles/simple.css";
 import { fetchHackerNews, HackerNewsResult } from "../lib/HackerNews";
+import { LoaderFunction } from "@remix-run/router";
 
 export function links() {
     return [{ rel: "stylesheet", href: styles }];

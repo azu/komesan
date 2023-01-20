@@ -39,7 +39,7 @@ https://komesan.pages.dev/?url=<encoded url>&service=hackerNews
 
 ## Develop
 
-Create `.env` file.
+Create `.dev.vars` file.
 
     TWITTER_TOKEN=<Twitter API v2 Bearer Token>
 
