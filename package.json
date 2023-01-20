@@ -10,7 +10,8 @@
     "dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public --kv DOWNVOTE --compatibility-date=2022-11-29",
     "start": "npm run dev:wrangler",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-    "prepare": "git config --local core.hooksPath .githooks"
+    "prepare": "git config --local core.hooksPath .githooks",
+    "test": "tsc"
   },
   "dependencies": {
     "@remix-run/cloudflare": "^1.11.0",
