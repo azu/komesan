@@ -1,6 +1,6 @@
-export type KVRequest = {
+export type DownvoteRequest = {
     id: string;
-    type: string;
+    type: "hatenabookmark" | "twitter";
 };
 export type DownVote = {
     // { `${type}::${username}`: {} }`
@@ -8,7 +8,7 @@ export type DownVote = {
         unixTimeStamp: number;
     };
 };
-export const createId = (req: KVRequest) => `${req.type}::${req.id}`;
+export const createId = (req: DownvoteRequest) => `${req.type}::${req.id}`;
 export const createStorage = (env: { DOWNVOTE: KVNamespace }) => {
     const getDownVotes = async (): Promise<DownVote> => {
         const res = await env.DOWNVOTE.get("DOWNVOTE", {
@@ -19,7 +19,7 @@ export const createStorage = (env: { DOWNVOTE: KVNamespace }) => {
         }
         return {};
     };
-    const downVote = async (req: KVRequest) => {
+    const downVote = async (req: DownvoteRequest) => {
         const prevVotes = await getDownVotes();
         const key = createId(req);
         const newVotes: DownVote = {
@@ -31,5 +31,19 @@ export const createStorage = (env: { DOWNVOTE: KVNamespace }) => {
         return env.DOWNVOTE.put("DOWNVOTE", JSON.stringify(newVotes));
     };
 
-    return { getDownVotes, downVote };
+    const downVotes = async (requests: DownvoteRequest[]) => {
+        const prevVotes = await getDownVotes();
+        const newVotes: DownVote = requests.reduce((acc, req) => {
+            const key = createId(req);
+            return {
+                ...acc,
+                [key]: {
+                    unixTimeStamp: Date.now()
+                }
+            };
+        }, prevVotes);
+        return env.DOWNVOTE.put("DOWNVOTE", JSON.stringify(newVotes));
+    };
+
+    return { getDownVotes, downVote, downVotes };
 };
