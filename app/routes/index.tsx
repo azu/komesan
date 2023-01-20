@@ -1,4 +1,4 @@
-import { Form, Link, LoaderFunction, redirect, useActionData, useLoaderData, useTransition } from "remix";
+import { Form, Link, redirect, useActionData, useLoaderData, useTransition } from "remix";
 import { fetchTwitter, Tweets } from "../lib/Twitter";
 import { BookmarkSite, fetchHatenaBookmark } from "../lib/Bookmark";
 import { LinkItUrl } from "react-linkify-it";
