@@ -27,9 +27,7 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
     const enableServices = {
         hatebu: true, // enable by default
         twitter:
-            url.origin === "https://komesan.pages.dev" ||
-            url.host.startsWith("localhost:") ||
-            url.host.startsWith("127.0.0.1:"),
+            url.origin === "https://komesan.pages.dev" || url.hostname === "localhost" || url.hostname === "127.0.0.1",
         hackerNews: services.includes("hackerNews") ?? false
     };
     const isUrl = urlParam?.startsWith("http") || urlParam?.startsWith("https");
