@@ -24,7 +24,6 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
     const urlParam = url.searchParams.get("url");
     const enableMinMode = url.searchParams.has("min");
     const services = url.searchParams.getAll("service");
-    console.log(url.host);
     const enableServices = {
         hatebu: true, // enable by default
         twitter:
