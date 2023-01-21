@@ -24,9 +24,13 @@ export let loader: LoaderFunction = async ({ context, request, params }) => {
     const urlParam = url.searchParams.get("url");
     const enableMinMode = url.searchParams.has("min");
     const services = url.searchParams.getAll("service");
+    console.log(url.host);
     const enableServices = {
         hatebu: true, // enable by default
-        twitter: url.origin === "https://komesan.page.dev" || url.host === "localhost",
+        twitter:
+            url.origin === "https://komesan.pages.dev" ||
+            url.host.startsWith("localhost:") ||
+            url.host.startsWith("127.0.0.1:"),
         hackerNews: services.includes("hackerNews") ?? false
     };
     const isUrl = urlParam?.startsWith("http") || urlParam?.startsWith("https");
